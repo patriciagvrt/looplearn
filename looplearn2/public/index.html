@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#07071a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="LoopLearn"/>
+<link rel="manifest" href="/manifest.json"/>
+<title>LoopLearn — by Cognitive Loop</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#07071a;--card:#13133a;--border:rgba(99,179,237,0.15);--accent:#38bdf8;--accent2:#818cf8;--accent3:#34d399;--warn:#f472b6;--text:#e2e8f0;--muted:rgba(226,232,240,0.45);--font:'Sora',sans-serif;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font)}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;transition:opacity .3s,transform .3s}
+.screen.hidden{opacity:0;pointer-events:none;transform:translateY(16px)}
+#setup{background:radial-gradient(ellipse at 50% 0%,rgba(56,189,248,.09) 0%,transparent 65%),var(--bg);overflow-y:auto;align-items:center;padding:44px 20px 48px;gap:24px}
+.logo-block{text-align:center;animation:rise .5s ease both}
+.loop-icon{font-size:58px;display:block;margin-bottom:8px;animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.logo-title{font-size:36px;font-weight:800;letter-spacing:-1.5px}
+.logo-title .L{color:var(--accent)}.logo-title .R{color:var(--accent2)}
+.logo-by{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.section-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.subject-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;max-width:440px;animation:rise .5s .15s ease both;opacity:0;animation-fill-mode:forwards}
+.subject-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s}
+.subject-card.active{border-color:var(--accent);background:rgba(56,189,248,.08)}
+.s-icon{font-size:26px;margin-bottom:6px}.s-name{font-size:13px;font-weight:600}
+.level-row{display:flex;gap:10px;width:100%;max-width:440px;animation:rise .5s .2s ease both;opacity:0;animation-fill-mode:forwards}
+.level-btn{flex:1;padding:11px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.level-btn.active{border-color:var(--accent2);background:rgba(129,140,248,.15);color:var(--accent2)}
+.start-btn{width:100%;max-width:440px;padding:15px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;animation:rise .5s .25s ease both;opacity:0;animation-fill-mode:forwards}
+.start-btn:disabled{opacity:.3;cursor:default}
+#chat{background:var(--bg)}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);background:rgba(7,7,26,.92);backdrop-filter:blur(14px);flex-shrink:0}
+.chat-left{display:flex;align-items:center;gap:10px}
+.chat-avatar{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:19px}
+.chat-title{font-weight:700;font-size:15px}.chat-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.back-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 13px;border-radius:20px;font-family:var(--font);font-size:12px;cursor:pointer}
+.quick-row{display:flex;gap:7px;padding:9px 13px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+.quick-row::-webkit-scrollbar{display:none}
+.qbtn{white-space:nowrap;padding:6px 13px;border-radius:20px;border:1px solid;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;background:transparent}
+.qb1{border-color:rgba(129,140,248,.5);color:var(--accent2)}.qb2{border-color:rgba(56,189,248,.5);color:var(--accent)}
+.qb3{border-color:rgba(52,211,153,.5);color:var(--accent3)}.qb4{border-color:rgba(244,114,182,.5);color:var(--warn)}
+.messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.msg{display:flex;gap:9px;animation:rise .28s ease}.msg.user{flex-direction:row-reverse}
+.mavatar{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px}
+.msg.ai .mavatar{background:linear-gradient(135deg,var(--accent),var(--accent2))}.msg.user .mavatar{background:linear-gradient(135deg,var(--warn),#c084fc)}
+.mbubble{max-width:78%;padding:11px 14px;border-radius:16px;font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.msg.ai .mbubble{background:var(--card);border:1px solid var(--border);border-radius:4px 16px 16px 16px}
+.msg.user .mbubble{background:linear-gradient(135deg,rgba(129,140,248,.22),rgba(56,189,248,.18));border:1px solid rgba(129,140,248,.28);border-radius:16px 4px 16px 16px}
+.mtime{font-size:10px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+.typing{display:flex;align-items:center;gap:5px;padding:10px 14px}
+.dot{width:7px;height:7px;border-radius:50%;animation:pulse 1.2s ease-in-out infinite}
+.dot:nth-child(1){background:var(--accent)}.dot:nth-child(2){animation-delay:.2s;background:var(--accent2)}.dot:nth-child(3){animation-delay:.4s;background:var(--accent3)}
+.input-area{padding:11px 13px;border-top:1px solid var(--border);background:rgba(7,7,26,.95);backdrop-filter:blur(12px);display:flex;gap:9px;align-items:flex-end;flex-shrink:0}
+.msg-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 14px;color:var(--text);font-family:var(--font);font-size:14px;resize:none;outline:none;max-height:110px;line-height:1.5;transition:border-color .2s}
+.msg-input:focus{border-color:var(--accent)}.msg-input::placeholder{color:var(--muted)}
+.send-btn{width:44px;height:44px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.send-btn:disabled{opacity:.28}
+#data{background:var(--bg);overflow-y:auto}
+.data-header{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border)}
+.data-title{font-size:15px;font-weight:700;flex:1}
+.export-btn{background:var(--accent3);border:none;color:#07071a;padding:7px 14px;border-radius:10px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer}
+.data-body{padding:14px;display:flex;flex-direction:column;gap:12px;padding-bottom:40px}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center}
+.stat-val{font-size:26px;font-weight:800;color:var(--accent);font-family:var(--mono)}.stat-lbl{font-size:11px;color:var(--muted);margin-top:3px}
+.sitem{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px}
+.sitem-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.sitem-subj{font-weight:700;font-size:14px;color:var(--accent2)}.sitem-date{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.sitem-stats{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}.sitem-stats b{color:var(--text)}
+.clear-btn{background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.25);color:var(--warn);padding:11px;border-radius:12px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;width:100%}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,80%,100%{transform:scale(.55);opacity:.35}40%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="screen" id="setup">
+  <div class="logo-block">
+    <span class="loop-icon">🔁</span>
+    <div class="logo-title"><span class="L">Loop</span><span class="R">Learn</span></div>
+    <div class="logo-by">by Cognitive Loop</div>
+  </div>
+  <div style="width:100%;max-width:440px;animation:rise .5s .1s ease both;opacity:0;animation-fill-mode:forwards">
+    <div class="section-label" id="lbl-level" style="margin-bottom:10px"></div>
+    <div class="level-row">
+      <button class="level-btn active" id="lvl-hs" onclick="setLevel(this,'hs')"></button>
+      <button class="level-btn" id="lvl-uni" onclick="setLevel(this,'uni')"></button>
+    </div>
+  </div>
+  <div style="width:100%;max-width:440px;animation:rise .5s .18s ease both;opacity:0;animation-fill-mode:forwards">
+    <div class="section-label" id="lbl-subject" style="margin-bottom:10px"></div>
+    <div class="subject-grid" id="subjectGrid"></div>
+  </div>
+  <button class="start-btn" id="startBtn" onclick="startChat()" disabled></button>
+</div>
+<div class="screen hidden" id="chat">
+  <div class="chat-header">
+    <div class="chat-left">
+      <div class="chat-avatar" id="chatAvatar">🔁</div>
+      <div><div class="chat-title" id="chatTitle">LoopLearn</div><div class="chat-sub" id="chatSub">by Cognitive Loop</div></div>
+    </div>
+    <button class="back-btn" id="btn-back" onclick="goBack()"></button>
+  </div>
+  <div class="quick-row" id="quickRow"></div>
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <textarea class="msg-input" id="msgInput" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+<div class="screen hidden" id="data">
+  <div class="data-header">
+    <button class="back-btn" onclick="showScreen('setup')" id="btn-back-data"></button>
+    <div class="data-title" id="data-title">📊 LoopLearn</div>
+    <button class="export-btn" onclick="exportData()" id="btn-export">⬇ CSV</button>
+  </div>
+  <div class="data-body" id="dataBody"></div>
+</div>
+<script>
+const syslang=(navigator.languages&&navigator.languages[0])||navigator.language||'en';
+const lang=syslang.toLowerCase().startsWith('pt')?'pt':syslang.toLowerCase().startsWith('es')?'es':syslang.toLowerCase().startsWith('fr')?'fr':'en';
+
+const T={
+  en:{
+    levelLabel:'Your Level',subjectLabel:'Choose a Subject',startBtn:'Start Learning →',
+    hs:'🏫 High School',uni:'🎓 University',backBtn:'← Back',
+    placeholder:'Ask something or answer the quiz…',
+    dataTitle:'📊 Research Data · LoopLearn',exportBtn:'⬇ CSV',
+    sessions:'Sessions',totalTime:'Total Time',quizQ:'Quiz Questions',accuracy:'Accuracy',
+    sessionHistory:'Session History',noSessions:'No sessions yet',
+    clearBtn:'🗑 Clear all data',clearConfirm:'Delete all data? Cannot be undone.',noData:'No data to export yet.',
+    quickQuiz:'🧩 Quiz',quickExplain:'💡 Explain',quickFact:'✨ Fun Fact',quickExample:'📝 Example',quickData:'📊 My Data',
+    subjects:[{n:'Mathematics',i:'∑'},{n:'Physics',i:'⚛️'},{n:'Chemistry',i:'⚗️'},{n:'Biology',i:'🧬'},{n:'History',i:'📜'},{n:'Literature',i:'📖'},{n:'Computer Sci.',i:'💻'},{n:'English',i:'🌎'}],
+    levelName:{hs:'High School',uni:'University'},
+    system:(s,l)=>`You are an enthusiastic tutor specializing in ${s} for ${l} students. Explain simply with real examples. For quizzes: one question at a time, correct warmly. Say "✅ CORRECT!" or "❌ INCORRECT". Be encouraging and concise. Always reply in English.`,
+    welcome:(s,l)=>`Introduce yourself briefly as a ${s} tutor for ${l} students and ask what topic they want to learn or be quizzed on. Be warm, use 1-2 emojis.`,
+    quiz:(s,l)=>`Give me one quiz question about ${s} for ${l}. One question only.`,
+    explain:()=>`Summarize what we covered simply with a real-life example.`,
+    fact:(s)=>`Tell me one surprising fact about ${s}.`,
+    example:()=>`Give me a practical real-world example of what we're studying.`,
+  },
+  pt:{
+    levelLabel:'Seu Nível',subjectLabel:'Escolha a Matéria',startBtn:'Começar a Estudar →',
+    hs:'🏫 Ensino Médio',uni:'🎓 Universidade',backBtn:'← Voltar',
+    placeholder:'Pergunte algo ou responda o quiz…',
+    dataTitle:'📊 Dados da Pesquisa · LoopLearn',exportBtn:'⬇ CSV',
+    sessions:'Sessões',totalTime:'Tempo Total',quizQ:'Perguntas Quiz',accuracy:'Taxa de Acerto',
+    sessionHistory:'Histórico de Sessões',noSessions:'Nenhuma sessão ainda',
+    clearBtn:'🗑 Limpar todos os dados',clearConfirm:'Apagar todos os dados? Não pode ser desfeito.',noData:'Nenhum dado para exportar ainda.',
+    quickQuiz:'🧩 Quiz',quickExplain:'💡 Explica',quickFact:'✨ Curiosidade',quickExample:'📝 Exemplo',quickData:'📊 Meus Dados',
+    subjects:[{n:'Matemática',i:'∑'},{n:'Física',i:'⚛️'},{n:'Química',i:'⚗️'},{n:'Biologia',i:'🧬'},{n:'História',i:'📜'},{n:'Literatura',i:'📖'},{n:'Programação',i:'💻'},{n:'Inglês',i:'🌎'}],
+    levelName:{hs:'Ensino Médio',uni:'Universidade'},
+    system:(s,l)=>`Você é um tutor animado especializado em ${s} para alunos do ${l}. Explique de forma simples com exemplos reais. Em quizzes: uma pergunta por vez, corrija com carinho. Diga "✅ CORRETO!" ou "❌ INCORRETO". Seja encorajador e conciso. Responda sempre em português.`,
+    welcome:(s,l)=>`Apresente-se brevemente como tutor de ${s} para ${l} e pergunte qual tópico o aluno quer aprender. Seja animado, use 1-2 emojis.`,
+    quiz:(s,l)=>`Me faça uma pergunta de quiz sobre ${s} para ${l}. Apenas uma pergunta.`,
+    explain:()=>`Resuma o que vimos de forma simples com um exemplo da vida real.`,
+    fact:(s)=>`Me conta um fato surpreendente sobre ${s}.`,
+    example:()=>`Me dá um exemplo prático e real sobre o que estamos estudando.`,
+  },
+  es:{
+    levelLabel:'Tu Nivel',subjectLabel:'Elige una Materia',startBtn:'Empezar →',
+    hs:'🏫 Secundaria',uni:'🎓 Universidad',backBtn:'← Volver',
+    placeholder:'Pregunta algo o responde el quiz…',
+    dataTitle:'📊 Datos · LoopLearn',exportBtn:'⬇ CSV',
+    sessions:'Sesiones',totalTime:'Tiempo Total',quizQ:'Quiz',accuracy:'Precisión',
+    sessionHistory:'Historial',noSessions:'Sin sesiones',
+    clearBtn:'🗑 Borrar todo',clearConfirm:'¿Borrar todos los datos?',noData:'Sin datos.',
+    quickQuiz:'🧩 Quiz',quickExplain:'💡 Explica',quickFact:'✨ Curiosidad',quickExample:'📝 Ejemplo',quickData:'📊 Mis Datos',
+    subjects:[{n:'Matemáticas',i:'∑'},{n:'Física',i:'⚛️'},{n:'Química',i:'⚗️'},{n:'Biología',i:'🧬'},{n:'Historia',i:'📜'},{n:'Literatura',i:'📖'},{n:'Informática',i:'💻'},{n:'Inglés',i:'🌎'}],
+    levelName:{hs:'Secundaria',uni:'Universidad'},
+    system:(s,l)=>`Eres un tutor entusiasta de ${s} para ${l}. Explica simple con ejemplos reales. Quiz: una pregunta a la vez. Di "✅ ¡CORRECTO!" o "❌ INCORRECTO". Responde en español.`,
+    welcome:(s,l)=>`Preséntate como tutor de ${s} para ${l} y pregunta qué tema quieren aprender. Usa 1-2 emojis.`,
+    quiz:(s,l)=>`Una pregunta de quiz sobre ${s} para ${l}.`,
+    explain:()=>`Resume lo que vimos con un ejemplo real.`,
+    fact:(s)=>`Un dato sorprendente sobre ${s}.`,
+    example:()=>`Un ejemplo práctico de lo que estudiamos.`,
+  },
+  fr:{
+    levelLabel:'Ton Niveau',subjectLabel:'Choisis une Matière',startBtn:'Commencer →',
+    hs:'🏫 Lycée',uni:'🎓 Université',backBtn:'← Retour',
+    placeholder:'Pose une question…',
+    dataTitle:'📊 Données · LoopLearn',exportBtn:'⬇ CSV',
+    sessions:'Sessions',totalTime:'Temps',quizQ:'Quiz',accuracy:'Précision',
+    sessionHistory:'Historique',noSessions:'Aucune session',
+    clearBtn:'🗑 Effacer',clearConfirm:'Supprimer toutes les données?',noData:'Aucune donnée.',
+    quickQuiz:'🧩 Quiz',quickExplain:'💡 Explique',quickFact:'✨ Anecdote',quickExample:'📝 Exemple',quickData:'📊 Données',
+    subjects:[{n:'Mathématiques',i:'∑'},{n:'Physique',i:'⚛️'},{n:'Chimie',i:'⚗️'},{n:'Biologie',i:'🧬'},{n:'Histoire',i:'📜'},{n:'Littérature',i:'📖'},{n:'Informatique',i:'💻'},{n:'Anglais',i:'🌎'}],
+    levelName:{hs:'Lycée',uni:'Université'},
+    system:(s,l)=>`Tu es un tuteur enthousiaste en ${s} pour ${l}. Explique simplement avec exemples réels. Quiz: une question à la fois. Dis "✅ CORRECT!" ou "❌ INCORRECT". Réponds en français.`,
+    welcome:(s,l)=>`Présente-toi comme tuteur en ${s} pour ${l} et demande quel sujet apprendre. Utilise 1-2 emojis.`,
+    quiz:(s,l)=>`Une question de quiz sur ${s} pour ${l}.`,
+    explain:()=>`Résume ce qu'on a vu avec un exemple réel.`,
+    fact:(s)=>`Un fait surprenant sur ${s}.`,
+    example:()=>`Un exemple pratique de ce qu'on étudie.`,
+  }
+};
+
+const tx=()=>T[lang]||T.en;
+let state={subject:'',subjectIcon:'',level:'hs',messages:[],currentSession:null,loading:false};
+
+window.addEventListener('load',()=>{
+  const t=tx();
+  document.getElementById('lbl-level').textContent=t.levelLabel;
+  document.getElementById('lbl-subject').textContent=t.subjectLabel;
+  document.getElementById('startBtn').textContent=t.startBtn;
+  document.getElementById('lvl-hs').textContent=t.hs;
+  document.getElementById('lvl-uni').textContent=t.uni;
+  document.getElementById('btn-back').textContent=t.backBtn;
+  document.getElementById('btn-back-data').textContent=t.backBtn;
+  document.getElementById('msgInput').placeholder=t.placeholder;
+  buildSubjects();
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+});
+
+function buildSubjects(){
+  const g=document.getElementById('subjectGrid');g.innerHTML='';
+  tx().subjects.forEach(s=>{
+    const d=document.createElement('div');
+    d.className='subject-card'+(state.subject===s.n?' active':'');
+    d.innerHTML=`<div class="s-icon">${s.i}</div><div class="s-name">${s.n}</div>`;
+    d.onclick=()=>{state.subject=s.n;state.subjectIcon=s.i;document.querySelectorAll('.subject-card').forEach(c=>c.classList.remove('active'));d.classList.add('active');document.getElementById('startBtn').disabled=false;};
+    g.appendChild(d);
+  });
+}
+function buildQuickRow(){
+  const t=tx();
+  document.getElementById('quickRow').innerHTML=`
+    <button class="qbtn qb1" onclick="quick('quiz')">${t.quickQuiz}</button>
+    <button class="qbtn qb2" onclick="quick('explain')">${t.quickExplain}</button>
+    <button class="qbtn qb3" onclick="quick('fact')">${t.quickFact}</button>
+    <button class="qbtn qb2" onclick="quick('example')">${t.quickExample}</button>
+    <button class="qbtn qb4" onclick="showData()">${t.quickData}</button>`;
+}
+function setLevel(btn,lvl){state.level=lvl;document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function showScreen(id){['setup','chat','data'].forEach(s=>document.getElementById(s).classList.toggle('hidden',s!==id));}
+function goBack(){if(state.currentSession)saveSession();showScreen('setup');}
+
+async function startChat(){
+  const t=tx();const levelName=t.levelName[state.level];
+  state.messages=[];
+  state.currentSession={id:Date.now(),subject:state.subject,level:levelName,lang,startTime:new Date().toISOString(),messages:[],quizCount:0,quizCorrect:0};
+  document.getElementById('chatTitle').textContent=state.subject;
+  document.getElementById('chatSub').textContent=levelName+' · LoopLearn';
+  document.getElementById('chatAvatar').textContent=state.subjectIcon;
+  document.getElementById('messages').innerHTML='';
+  buildQuickRow();showScreen('chat');
+  await callAI(t.welcome(state.subject,levelName),true);
+}
+
+async function callAI(userText,isWelcome=false){
+  const t=tx();const levelName=t.levelName[state.level];
+  if(!isWelcome){
+    const time=now();const msg={role:'user',content:userText,time};
+    state.messages.push(msg);state.currentSession?.messages.push(msg);addBubble('user',userText,time);
+  }
+  state.loading=true;document.getElementById('sendBtn').disabled=true;showTyping();
+
+  const history=isWelcome
+    ?[{role:'user',parts:[{text:userText}]}]
+    :state.messages.slice(-12).map(m=>({role:m.role==='user'?'user':'model',parts:[{text:m.content}]}));
+
+  try{
+    // Calls /api/chat on the server — key is safe there
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history,system:t.system(state.subject,levelName)})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error);
+    const reply=data.reply;
+    hideTyping();const time=now();
+    state.messages.push({role:'assistant',content:reply,time});
+    if(state.currentSession){
+      state.currentSession.messages.push({role:'assistant',content:reply,time});
+      if(reply.includes('✅'))state.currentSession.quizCorrect++;
+      if(reply.includes('✅')||reply.includes('❌'))state.currentSession.quizCount++;
+    }
+    addBubble('ai',reply,time);
+  }catch(err){hideTyping();addBubble('ai',`⚠️ ${err.message}`,now());}
+  state.loading=false;document.getElementById('sendBtn').disabled=false;
+}
+
+function quick(type){
+  const t=tx();const levelName=t.levelName[state.level];
+  const map={quiz:t.quiz(state.subject,levelName),explain:t.explain(),fact:t.fact(state.subject),example:t.example()};
+  callAI(map[type]);
+}
+function addBubble(role,text,time){
+  const w=document.getElementById('messages');const d=document.createElement('div');d.className=`msg ${role}`;
+  d.innerHTML=`<div class="mavatar">${role==='ai'?'🔁':'🧑‍🎓'}</div><div><div class="mbubble">${esc(text)}</div><div class="mtime">${time}</div></div>`;
+  w.appendChild(d);w.scrollTop=w.scrollHeight;
+}
+let typEl=null;
+function showTyping(){const w=document.getElementById('messages');typEl=document.createElement('div');typEl.className='msg ai';typEl.innerHTML='<div class="mavatar">🔁</div><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';w.appendChild(typEl);w.scrollTop=w.scrollHeight;}
+function hideTyping(){typEl?.remove();typEl=null;}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function now(){return new Date().toLocaleTimeString(syslang,{hour:'2-digit',minute:'2-digit'});}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function sendMessage(){const i=document.getElementById('msgInput');const t=i.value.trim();if(!t||state.loading)return;i.value='';i.style.height='auto';callAI(t);}
+function saveSession(){
+  if(!state.currentSession)return;
+  state.currentSession.endTime=new Date().toISOString();
+  state.currentSession.duration=Math.round((new Date(state.currentSession.endTime)-new Date(state.currentSession.startTime))/60000);
+  const s=JSON.parse(localStorage.getItem('looplearn_sessions')||'[]');s.push(state.currentSession);
+  localStorage.setItem('looplearn_sessions',JSON.stringify(s));state.currentSession=null;
+}
+function showData(){
+  if(state.currentSession)saveSession();
+  const sessions=JSON.parse(localStorage.getItem('looplearn_sessions')||'[]');
+  const t=tx();
+  const totalMin=sessions.reduce((a,s)=>a+(s.duration||0),0);
+  const totalQuiz=sessions.reduce((a,s)=>a+s.quizCount,0);
+  const totalCorrect=sessions.reduce((a,s)=>a+s.quizCorrect,0);
+  document.getElementById('data-title').textContent=t.dataTitle;
+  document.getElementById('btn-export').textContent=t.exportBtn;
+  document.getElementById('btn-back-data').textContent=t.backBtn;
+  document.getElementById('dataBody').innerHTML=`
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val">${sessions.length}</div><div class="stat-lbl">${t.sessions}</div></div>
+      <div class="stat-card"><div class="stat-val">${totalMin}m</div><div class="stat-lbl">${t.totalTime}</div></div>
+      <div class="stat-card"><div class="stat-val">${totalQuiz}</div><div class="stat-lbl">${t.quizQ}</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent3)">${totalQuiz?Math.round(totalCorrect/totalQuiz*100):0}%</div><div class="stat-lbl">${t.accuracy}</div></div>
+    </div>
+    <div class="section-label" style="margin-top:4px">${t.sessionHistory}</div>
+    ${sessions.length===0?`<div style="color:var(--muted);text-align:center;padding:24px;font-size:14px">${t.noSessions}</div>`:
+      sessions.slice().reverse().map(s=>`<div class="sitem"><div class="sitem-top"><div class="sitem-subj">${s.subject}</div><div class="sitem-date">${new Date(s.startTime).toLocaleDateString()}</div></div><div class="sitem-stats">⏱ <b>${s.duration||0}min</b> &nbsp; 💬 <b>${s.messages.length}</b> msgs &nbsp; 🧩 <b>${s.quizCorrect}/${s.quizCount}</b></div></div>`).join('')}
+    <button class="clear-btn" onclick="clearData()">${t.clearBtn}</button>`;
+  showScreen('data');
+}
+function exportData(){
+  const sessions=JSON.parse(localStorage.getItem('looplearn_sessions')||'[]');
+  if(!sessions.length){alert(tx().noData);return;}
+  let csv='Session,Subject,Level,Language,Date,Duration(min),Messages,Quiz Total,Quiz Correct,Accuracy\n';
+  sessions.forEach((s,i)=>{const acc=s.quizCount?Math.round(s.quizCorrect/s.quizCount*100):0;csv+=`${i+1},"${s.subject}","${s.level}","${s.lang||'—'}","${new Date(s.startTime).toLocaleDateString()}",${s.duration||0},${s.messages.length},${s.quizCount},${s.quizCorrect},${acc}%\n`;});
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'looplearn_research.csv'});a.click();
+}
+function clearData(){if(confirm(tx().clearConfirm)){localStorage.removeItem('looplearn_sessions');showData();}}
+</script>
+</body>
+</html>
