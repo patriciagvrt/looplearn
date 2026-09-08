@@ -74,11 +74,77 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .sitem-stats{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}.sitem-stats b{color:var(--text)}
 .clear-btn{background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.25);color:var(--warn);padding:11px;border-radius:12px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;width:100%}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* ── CONSENT SCREEN ── */
+#consent{background:radial-gradient(ellipse at 50% 0%,rgba(56,189,248,.09) 0%,transparent 65%),var(--bg);overflow-y:auto;align-items:center;justify-content:center;padding:32px 20px 48px;gap:0}
+.consent-box{width:100%;max-width:480px;display:flex;flex-direction:column;gap:20px;animation:rise .5s ease both}
+.consent-logo{text-align:center;margin-bottom:8px}
+.consent-logo .loop-icon{font-size:42px;animation:spin 8s linear infinite}
+.consent-logo .logo-title{font-size:28px;font-weight:800;letter-spacing:-1px}
+.consent-badge{display:inline-block;background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);color:var(--accent3);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+.consent-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.consent-card h3{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:2px}
+.consent-item{display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text);line-height:1.6}
+.consent-item .ci-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.consent-divider{height:1px;background:var(--border);margin:4px 0}
+.consent-collect{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:12px;padding:14px}
+.consent-collect h4{font-size:12px;font-weight:700;color:var(--accent3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.consent-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-bottom:1px solid rgba(52,211,153,.1)}
+.consent-row:last-child{border-bottom:none}
+.consent-row .cr-label{color:var(--muted)}
+.consent-row .cr-val{font-weight:600;color:var(--text)}
+.cr-yes{color:var(--accent3)!important}.cr-no{color:var(--warn)!important}
+.consent-note{font-size:11px;color:var(--muted);line-height:1.6;text-align:center;padding:0 8px}
+.consent-note a{color:var(--accent);text-decoration:none}
+.consent-btns{display:flex;flex-direction:column;gap:10px}
+.consent-accept{padding:15px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.consent-accept:hover{opacity:.88}
+.consent-decline{padding:12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;cursor:pointer}
+.consent-declined{background:rgba(244,114,182,.06);border:1px solid rgba(244,114,182,.2);border-radius:12px;padding:14px;font-size:13px;color:var(--muted);text-align:center;line-height:1.6}
+
 @keyframes pulse{0%,80%,100%{transform:scale(.55);opacity:.35}40%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
-<div class="screen" id="setup">
+
+<!-- ══ CONSENT SCREEN ══ -->
+<div class="screen" id="consent">
+  <div class="consent-box">
+    <div class="consent-logo">
+      <span class="loop-icon">🔁</span>
+      <div class="logo-title"><span class="L">Loop</span><span class="R">Learn</span></div>
+      <span class="consent-badge">Research Study · LiU</span>
+    </div>
+
+    <div class="consent-card">
+      <h3 id="c-title">📋 Before you start</h3>
+      <div class="consent-item"><span class="ci-icon">🎓</span><span id="c-p1">This app is part of a Master's research study at Linköping University (LiU) investigating how AI tools support student learning.</span></div>
+      <div class="consent-item"><span class="ci-icon">👤</span><span id="c-p2">Participation is completely voluntary. You can stop at any time.</span></div>
+      <div class="consent-item"><span class="ci-icon">🔒</span><span id="c-p3">No personal data is collected. We cannot identify who you are.</span></div>
+    </div>
+
+    <div class="consent-collect">
+      <h4 id="c-collected">What is collected</h4>
+      <div class="consent-row"><span class="cr-label" id="c-r1l">Session duration</span><span class="cr-val cr-yes" id="c-r1v">✅ Yes (anonymous)</span></div>
+      <div class="consent-row"><span class="cr-label" id="c-r2l">Subject & level chosen</span><span class="cr-val cr-yes" id="c-r2v">✅ Yes (anonymous)</span></div>
+      <div class="consent-row"><span class="cr-label" id="c-r3l">Quiz performance</span><span class="cr-val cr-yes" id="c-r3v">✅ Yes (anonymous)</span></div>
+      <div class="consent-row"><span class="cr-label" id="c-r4l">Chat messages content</span><span class="cr-val cr-no" id="c-r4v">❌ Never</span></div>
+      <div class="consent-row"><span class="cr-label" id="c-r5l">Name, email or identity</span><span class="cr-val cr-no" id="c-r5v">❌ Never</span></div>
+      <div class="consent-row"><span class="cr-label" id="c-r6l">Location or device info</span><span class="cr-val cr-no" id="c-r6v">❌ Never</span></div>
+    </div>
+
+    <p class="consent-note" id="c-note">Data is stored securely and used only for academic research. This study follows the ethical guidelines of <strong>Vetenskapsrådet</strong> and Linköping University.</p>
+
+    <div class="consent-btns">
+      <button class="consent-accept" onclick="acceptConsent()" id="c-accept">✅ I agree to participate</button>
+      <button class="consent-decline" onclick="declineConsent()" id="c-decline">No thanks, I'll use it without participating</button>
+    </div>
+    <div class="consent-declined hidden" id="c-declined-msg">
+      <span id="c-declined-text">You can still use LoopLearn! No data will be collected from your session.</span>
+    </div>
+  </div>
+</div>
+
+<div class="screen hidden" id="setup">
   <div class="logo-block">
     <span class="loop-icon">🔁</span>
     <div class="logo-title"><span class="L">Loop</span><span class="R">Learn</span></div>
@@ -202,7 +268,7 @@ const T={
 const tx=()=>T[lang]||T.en;
 let state={subject:'',subjectIcon:'',level:'hs',messages:[],currentSession:null,loading:false};
 
-window.addEventListener('load',()=>{
+window.addEventListener('load',()=>{ initConsent();
   const t=tx();
   document.getElementById('lbl-level').textContent=t.levelLabel;
   document.getElementById('lbl-subject').textContent=t.subjectLabel;
@@ -341,6 +407,125 @@ function exportData(){
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'looplearn_research.csv'});a.click();
 }
 function clearData(){if(confirm(tx().clearConfirm)){localStorage.removeItem('looplearn_sessions');showData();}}
+
+
+// ── CONSENT SYSTEM ──
+const CONSENT_TRANSLATIONS = {
+  en: {
+    title: '📋 Before you start',
+    p1: "This app is part of a Master's research study at Linköping University (LiU) investigating how AI tools support student learning.",
+    p2: 'Participation is completely voluntary. You can stop at any time.',
+    p3: 'No personal data is collected. We cannot identify who you are.',
+    collected: 'What is collected',
+    r1l:'Session duration', r1v:'✅ Yes (anonymous)',
+    r2l:'Subject & level chosen', r2v:'✅ Yes (anonymous)',
+    r3l:'Quiz performance', r3v:'✅ Yes (anonymous)',
+    r4l:'Chat messages content', r4v:'❌ Never',
+    r5l:'Name, email or identity', r5v:'❌ Never',
+    r6l:'Location or device info', r6v:'❌ Never',
+    note: 'Data is stored securely and used only for academic research. This study follows the ethical guidelines of <strong>Vetenskapsrådet</strong> and Linköping University.',
+    accept: '✅ I agree to participate',
+    decline: "No thanks, I'll use it without participating",
+    declinedMsg: 'You can still use LoopLearn! No data will be collected from your session.'
+  },
+  pt: {
+    title: '📋 Antes de começar',
+    p1: 'Este app faz parte de uma pesquisa de mestrado na Universidade de Linköping (LiU) sobre como ferramentas de IA apoiam o aprendizado dos estudantes.',
+    p2: 'A participação é completamente voluntária. Você pode parar a qualquer momento.',
+    p3: 'Nenhum dado pessoal é coletado. Não conseguimos identificar quem você é.',
+    collected: 'O que é coletado',
+    r1l:'Duração da sessão', r1v:'✅ Sim (anônimo)',
+    r2l:'Matéria e nível escolhidos', r2v:'✅ Sim (anônimo)',
+    r3l:'Desempenho no quiz', r3v:'✅ Sim (anônimo)',
+    r4l:'Conteúdo das mensagens', r4v:'❌ Nunca',
+    r5l:'Nome, email ou identidade', r5v:'❌ Nunca',
+    r6l:'Localização ou dados do dispositivo', r6v:'❌ Nunca',
+    note: 'Os dados são armazenados com segurança e usados apenas para pesquisa acadêmica. Este estudo segue as diretrizes éticas do <strong>Vetenskapsrådet</strong> e da Universidade de Linköping.',
+    accept: '✅ Concordo em participar',
+    decline: 'Não, obrigado — usar sem participar',
+    declinedMsg: 'Você ainda pode usar o LoopLearn! Nenhum dado será coletado da sua sessão.'
+  },
+  es: {
+    title: '📋 Antes de comenzar',
+    p1: 'Esta app forma parte de un estudio de maestría en la Universidad de Linköping (LiU) sobre cómo las herramientas de IA apoyan el aprendizaje.',
+    p2: 'La participación es completamente voluntaria. Puedes detenerte en cualquier momento.',
+    p3: 'No se recopilan datos personales. No podemos identificar quién eres.',
+    collected: 'Qué se recopila',
+    r1l:'Duración de la sesión', r1v:'✅ Sí (anónimo)',
+    r2l:'Materia y nivel elegidos', r2v:'✅ Sí (anónimo)',
+    r3l:'Rendimiento en el quiz', r3v:'✅ Sí (anónimo)',
+    r4l:'Contenido de los mensajes', r4v:'❌ Nunca',
+    r5l:'Nombre, email o identidad', r5v:'❌ Nunca',
+    r6l:'Ubicación o datos del dispositivo', r6v:'❌ Nunca',
+    note: 'Los datos se almacenan de forma segura y se usan solo para investigación académica. Este estudio sigue las pautas éticas del <strong>Vetenskapsrådet</strong> y la Universidad de Linköping.',
+    accept: '✅ Acepto participar',
+    decline: 'No gracias — usar sin participar',
+    declinedMsg: '¡Aún puedes usar LoopLearn! No se recopilarán datos de tu sesión.'
+  },
+  fr: {
+    title: '📋 Avant de commencer',
+    p1: "Cette application fait partie d'une étude de master à l'Université de Linköping (LiU) sur la façon dont les outils IA soutiennent l'apprentissage.",
+    p2: 'La participation est entièrement volontaire. Vous pouvez arrêter à tout moment.',
+    p3: 'Aucune donnée personnelle n'est collectée. Nous ne pouvons pas vous identifier.',
+    collected: 'Ce qui est collecté',
+    r1l:'Durée de la session', r1v:'✅ Oui (anonyme)',
+    r2l:'Matière et niveau choisis', r2v:'✅ Oui (anonyme)',
+    r3l:'Performance au quiz', r3v:'✅ Oui (anonyme)',
+    r4l:'Contenu des messages', r4v:'❌ Jamais',
+    r5l:'Nom, email ou identité', r5v:'❌ Jamais',
+    r6l:'Localisation ou données du dispositif', r6v:'❌ Jamais',
+    note: 'Les données sont stockées en sécurité et utilisées uniquement à des fins de recherche académique. Cette étude suit les directives éthiques du <strong>Vetenskapsrådet</strong> et de l'Université de Linköping.',
+    accept: '✅ J'accepte de participer',
+    decline: 'Non merci — utiliser sans participer',
+    declinedMsg: 'Vous pouvez quand même utiliser LoopLearn ! Aucune donnée ne sera collectée.'
+  }
+};
+
+let userConsented = false;
+
+function initConsent() {
+  // Check if already decided
+  const saved = localStorage.getItem('looplearn_consent');
+  if (saved === 'accepted') { userConsented = true; showScreen('setup'); return; }
+  if (saved === 'declined') { userConsented = false; showScreen('setup'); return; }
+
+  // Apply language to consent screen
+  const ct = CONSENT_TRANSLATIONS[lang] || CONSENT_TRANSLATIONS.en;
+  document.getElementById('c-title').textContent = ct.title;
+  document.getElementById('c-p1').textContent = ct.p1;
+  document.getElementById('c-p2').textContent = ct.p2;
+  document.getElementById('c-p3').textContent = ct.p3;
+  document.getElementById('c-collected').textContent = ct.collected;
+  document.getElementById('c-r1l').textContent = ct.r1l; document.getElementById('c-r1v').textContent = ct.r1v;
+  document.getElementById('c-r2l').textContent = ct.r2l; document.getElementById('c-r2v').textContent = ct.r2v;
+  document.getElementById('c-r3l').textContent = ct.r3l; document.getElementById('c-r3v').textContent = ct.r3v;
+  document.getElementById('c-r4l').textContent = ct.r4l; document.getElementById('c-r4v').textContent = ct.r4v;
+  document.getElementById('c-r5l').textContent = ct.r5l; document.getElementById('c-r5v').textContent = ct.r5v;
+  document.getElementById('c-r6l').textContent = ct.r6l; document.getElementById('c-r6v').textContent = ct.r6v;
+  document.getElementById('c-note').innerHTML = ct.note;
+  document.getElementById('c-accept').textContent = ct.accept;
+  document.getElementById('c-decline').textContent = ct.decline;
+  document.getElementById('c-declined-text').textContent = ct.declinedMsg;
+
+  showScreen('consent');
+}
+
+function acceptConsent() {
+  userConsented = true;
+  localStorage.setItem('looplearn_consent', 'accepted');
+  showScreen('setup');
+}
+
+function declineConsent() {
+  userConsented = false;
+  localStorage.setItem('looplearn_consent', 'declined');
+  // Show declined message then go to setup
+  document.getElementById('c-declined-msg').classList.remove('hidden');
+  document.getElementById('c-accept').style.display = 'none';
+  document.getElementById('c-decline').style.display = 'none';
+  setTimeout(() => showScreen('setup'), 2500);
+}
+
 </script>
 </body>
 </html>
