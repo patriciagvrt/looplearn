@@ -106,41 +106,33 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 </head>
 <body>
 
-<!-- ══ CONSENT SCREEN ══ -->
+<!-- ══ COMING SOON SCREEN ══ -->
 <div class="screen" id="consent">
-  <div class="consent-box">
-    <div class="consent-logo">
-      <span class="loop-icon">🔁</span>
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:32px 24px;text-align:center;gap:28px;max-width:480px;margin:0 auto">
+    <div style="animation:rise .5s ease both">
+      <span style="font-size:64px;display:block;margin-bottom:12px;animation:spin 8s linear infinite">🔁</span>
       <div class="logo-title"><span class="L">Loop</span><span class="R">Learn</span></div>
-      <span class="consent-badge">Research Study · LiU</span>
+      <div class="logo-by" style="margin-top:6px">by Cognitive Loop</div>
     </div>
 
-    <div class="consent-card">
-      <h3 id="c-title">📋 Before you start</h3>
-      <div class="consent-item"><span class="ci-icon">🎓</span><span id="c-p1">This app is part of a Master's research study at Linköping University (LiU) investigating how AI tools support student learning.</span></div>
-      <div class="consent-item"><span class="ci-icon">👤</span><span id="c-p2">Participation is completely voluntary. You can stop at any time.</span></div>
-      <div class="consent-item"><span class="ci-icon">🔒</span><span id="c-p3">No personal data is collected. We cannot identify who you are.</span></div>
+    <div style="animation:rise .5s .1s ease both;opacity:0;animation-fill-mode:forwards;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 24px;display:flex;flex-direction:column;gap:16px;width:100%">
+      <div style="font-size:36px">🚀</div>
+      <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px">Coming Soon</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7">An AI-powered tutor built for students.<br>Explanations, quizzes, and instant feedback<br>— all in your language.</div>
+
     </div>
 
-    <div class="consent-collect">
-      <h4 id="c-collected">What is collected</h4>
-      <div class="consent-row"><span class="cr-label" id="c-r1l">Session duration</span><span class="cr-val cr-yes" id="c-r1v">✅ Yes (anonymous)</span></div>
-      <div class="consent-row"><span class="cr-label" id="c-r2l">Subject & level chosen</span><span class="cr-val cr-yes" id="c-r2v">✅ Yes (anonymous)</span></div>
-      <div class="consent-row"><span class="cr-label" id="c-r3l">Quiz performance</span><span class="cr-val cr-yes" id="c-r3v">✅ Yes (anonymous)</span></div>
-      <div class="consent-row"><span class="cr-label" id="c-r4l">Chat messages content</span><span class="cr-val cr-no" id="c-r4v">❌ Never</span></div>
-      <div class="consent-row"><span class="cr-label" id="c-r5l">Name, email or identity</span><span class="cr-val cr-no" id="c-r5v">❌ Never</span></div>
-      <div class="consent-row"><span class="cr-label" id="c-r6l">Location or device info</span><span class="cr-val cr-no" id="c-r6v">❌ Never</span></div>
+    <div style="animation:rise .5s .2s ease both;opacity:0;animation-fill-mode:forwards;display:flex;gap:16px;font-size:12px;color:var(--muted)">
+      <span>🧩 Quizzes</span>
+      <span>💡 Explanations</span>
+      <span>🌎 Multilingual</span>
+      <span>📊 Progress</span>
     </div>
 
-    <p class="consent-note" id="c-note">Data is stored securely and used only for academic research. This study follows the ethical guidelines of <strong>Vetenskapsrådet</strong> and Linköping University.</p>
-
-    <div class="consent-btns">
-      <button class="consent-accept" onclick="acceptConsent()" id="c-accept">✅ I agree to participate</button>
-      <button class="consent-decline" onclick="declineConsent()" id="c-decline">No thanks, I'll use it without participating</button>
+    <div style="animation:rise .5s .3s ease both;opacity:0;animation-fill-mode:forwards;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.2);border-radius:12px;padding:12px 20px;font-size:12px;color:var(--muted)">
+      📬 Stay tuned at <strong style="color:var(--accent)">cognitiveloop.com</strong>
     </div>
-    <div class="consent-declined hidden" id="c-declined-msg">
-      <span id="c-declined-text">You can still use LoopLearn! No data will be collected from your session.</span>
-    </div>
+    <div style="animation:rise .5s .4s ease both;opacity:0;animation-fill-mode:forwards;font-size:11px;color:var(--muted)">by Cognitive Loop · Patricia Cruz</div>
   </div>
 </div>
 
@@ -358,13 +350,33 @@ function quick(type){
 }
 function addBubble(role,text,time){
   const w=document.getElementById('messages');const d=document.createElement('div');d.className=`msg ${role}`;
-  d.innerHTML=`<div class="mavatar">${role==='ai'?'🔁':'🧑‍🎓'}</div><div><div class="mbubble">${esc(text)}</div><div class="mtime">${time}</div></div>`;
-  w.appendChild(d);w.scrollTop=w.scrollHeight;
+  const avatar=role==='ai'?'🔁':'🧑‍🎓';
+  d.innerHTML=`<div class="mavatar">${avatar}</div><div><div class="mbubble">${esc(text)}</div><div class="mtime">${time}</div></div>`;
+  w.appendChild(d);
+  // Smooth scroll
+  setTimeout(()=>w.scrollTop=w.scrollHeight,50);
 }
 let typEl=null;
 function showTyping(){const w=document.getElementById('messages');typEl=document.createElement('div');typEl.className='msg ai';typEl.innerHTML='<div class="mavatar">🔁</div><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';w.appendChild(typEl);w.scrollTop=w.scrollHeight;}
 function hideTyping(){typEl?.remove();typEl=null;}
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function esc(t){
+  // Sanitize HTML first
+  t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // Render markdown
+  t = t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');  // **bold**
+  t = t.replace(/\*(.+?)\*/g,'<em>$1</em>');                // *italic*
+  t = t.replace(/`(.+?)`/g,'<code style="background:rgba(56,189,248,.15);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px">$1</code>'); // `code`
+  t = t.replace(/^### (.+)$/gm,'<strong style="color:var(--accent);font-size:13px;letter-spacing:1px;text-transform:uppercase">$1</strong>');
+  t = t.replace(/^## (.+)$/gm,'<strong style="color:var(--accent);font-size:15px">$1</strong>');
+  t = t.replace(/^\* (.+)$/gm,'&nbsp;&nbsp;• $1');           // * bullet
+  t = t.replace(/^\d+\. (.+)$/gm, (m,p1,offset,str) => {
+    const num = str.slice(0,offset).split('\n').filter(l=>/^\d+\./.test(l)).length + 1;
+    return `<strong style="color:var(--accent2)">${num}.</strong> ${p1}`;
+  });
+  t = t.replace(/---/g,'<hr style="border:none;border-top:1px solid var(--border);margin:8px 0">');
+  t = t.replace(/\n/g,'<br>');
+  return t;
+}
 function now(){return new Date().toLocaleTimeString(syslang,{hour:'2-digit',minute:'2-digit'});}
 function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
@@ -484,29 +496,7 @@ const CONSENT_TRANSLATIONS = {
 let userConsented = false;
 
 function initConsent() {
-  // Check if already decided
-  const saved = localStorage.getItem('looplearn_consent');
-  if (saved === 'accepted') { userConsented = true; showScreen('setup'); return; }
-  if (saved === 'declined') { userConsented = false; showScreen('setup'); return; }
-
-  // Apply language to consent screen
-  const ct = CONSENT_TRANSLATIONS[lang] || CONSENT_TRANSLATIONS.en;
-  document.getElementById('c-title').textContent = ct.title;
-  document.getElementById('c-p1').textContent = ct.p1;
-  document.getElementById('c-p2').textContent = ct.p2;
-  document.getElementById('c-p3').textContent = ct.p3;
-  document.getElementById('c-collected').textContent = ct.collected;
-  document.getElementById('c-r1l').textContent = ct.r1l; document.getElementById('c-r1v').textContent = ct.r1v;
-  document.getElementById('c-r2l').textContent = ct.r2l; document.getElementById('c-r2v').textContent = ct.r2v;
-  document.getElementById('c-r3l').textContent = ct.r3l; document.getElementById('c-r3v').textContent = ct.r3v;
-  document.getElementById('c-r4l').textContent = ct.r4l; document.getElementById('c-r4v').textContent = ct.r4v;
-  document.getElementById('c-r5l').textContent = ct.r5l; document.getElementById('c-r5v').textContent = ct.r5v;
-  document.getElementById('c-r6l').textContent = ct.r6l; document.getElementById('c-r6v').textContent = ct.r6v;
-  document.getElementById('c-note').innerHTML = ct.note;
-  document.getElementById('c-accept').textContent = ct.accept;
-  document.getElementById('c-decline').textContent = ct.decline;
-  document.getElementById('c-declined-text').textContent = ct.declinedMsg;
-
+  // COMING SOON MODE — always show coming soon screen
   showScreen('consent');
 }
 
